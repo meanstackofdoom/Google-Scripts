@@ -1,0 +1,23 @@
+This code is a Google Apps Script function designed to delete old backup folders from Google Drive that are older than a certain number of days specified by the RetentionDays variable. Here's a step-by-step explanation of how it works:
+
+Initialization:
+
+Folders: An array containing the ID(s) of the parent folder(s) where backups are stored. In this case, it's initialized with a single folder ID.
+FoldersToDelete: A variable that will later hold a collection of folders to evaluate for deletion.
+RetentionDays: The number of days after which backup folders should be considered old and eligible for deletion. It's set to 4 days in this code.
+RetentionPeriod: Calculates the retention period in milliseconds, based on the number of RetentionDays. This is done by multiplying the number of days by the number of milliseconds in a day (24 hours * 60 minutes * 60 seconds * 1000 milliseconds).
+Logging: The script clears any existing logs from previous runs to start fresh, using Logger.clear().
+
+Folder Traversal and Deletion Logic:
+
+The script iterates over each folder ID in the Folders array.
+For each folder ID, it uses DriveApp.getFolderById() to get the corresponding folder object.
+It then retrieves all sub-folders within the current folder using Folder.getFolders().
+For each sub-folder, the script checks if it's older than the RetentionPeriod by comparing the current date with the last update date of the folder. This is achieved by subtracting FolderToDelete.getLastUpdated() from the current date and comparing it with RetentionPeriod.
+If a sub-folder is older than the retention period, it is deleted using Folder.removeFolder(FolderToDelete), and a log entry is created using Logger.log(), noting the successful deletion.
+
+Email Notification:
+
+After evaluating all folders, the script checks if there are any log entries using Logger.getLog().
+If there are log entries (meaning at least one folder was deleted), it sends an email using MailApp.sendEmail(). The email is sent to 'yourname@gmail.com' (you would replace this with your actual email address), with a subject line indicating that a backup has been purged from Google Drive, and the body of the email contains the log of deleted folders.
+This script is useful for automating the cleanup of old backup folders in Google Drive, ensuring that only recent backups are retained and helping to manage storage space efficiently.
